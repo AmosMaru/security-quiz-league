@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -11,6 +11,7 @@ interface Question {
   correctAnswer: number;
   explanation: string;
   category: string;
+  image?: string;
 }
 
 const sampleQuestions: Question[] = [
@@ -39,6 +40,20 @@ const sampleQuestions: Question[] = [
     correctAnswer: 0,
     explanation: "OSINT refers to intelligence collected from publicly available sources.",
     category: "OSINT"
+  },
+  {
+    id: 3,
+    question: "Identify the potential security vulnerability in this code snippet:",
+    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=600&h=400&fit=crop",
+    options: [
+      "SQL Injection vulnerability",
+      "Cross-Site Scripting (XSS)",
+      "Buffer overflow",
+      "No vulnerabilities present"
+    ],
+    correctAnswer: 0,
+    explanation: "The code shows unsanitized user input being directly inserted into a SQL query, making it vulnerable to SQL injection attacks.",
+    category: "Code Security"
   }
 ];
 
@@ -48,6 +63,7 @@ const QuizInterface = () => {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const question = sampleQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / sampleQuestions.length) * 100;
@@ -59,15 +75,19 @@ const QuizInterface = () => {
   const handleSubmitAnswer = () => {
     if (selectedAnswer === question.correctAnswer) {
       setScore(score + 1);
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 2000);
     }
 
-    if (currentQuestion < sampleQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setTimeLeft(30);
-    } else {
-      setShowResults(true);
-    }
+    setTimeout(() => {
+      if (currentQuestion < sampleQuestions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer(null);
+        setTimeLeft(30);
+      } else {
+        setShowResults(true);
+      }
+    }, selectedAnswer === question.correctAnswer ? 2000 : 1000);
   };
 
   const getAnswerVariant = (index: number) => {
@@ -158,11 +178,30 @@ const QuizInterface = () => {
       </Card>
 
       {/* Question Card */}
-      <Card className="p-8">
+      <Card className="p-8 relative overflow-hidden">
+        {showCelebration && (
+          <div className="absolute inset-0 bg-primary/10 flex items-center justify-center z-10 animate-fade-in">
+            <div className="text-center space-y-4">
+              <div className="text-6xl animate-bounce">👏</div>
+              <div className="text-2xl font-bold text-primary animate-pulse">Correct!</div>
+              <div className="text-lg text-muted-foreground">Great job!</div>
+            </div>
+          </div>
+        )}
         <CardContent className="space-y-8">
           <h2 className="text-2xl font-semibold leading-relaxed">
             {question.question}
           </h2>
+
+          {question.image && (
+            <div className="rounded-lg overflow-hidden border border-border bg-muted/20">
+              <img 
+                src={question.image} 
+                alt="Question visual"
+                className="w-full h-64 object-cover"
+              />
+            </div>
+          )}
 
           <div className="grid gap-4">
             {question.options.map((option, index) => (
