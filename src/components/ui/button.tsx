@@ -18,11 +18,17 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        cyber: "bg-gradient-primary text-primary-foreground hover:shadow-glow-primary transition-all duration-300 hover:scale-105",
+        neon: "border-2 border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground hover:shadow-glow-primary animate-cyber-pulse",
+        quiz: "bg-gradient-card text-foreground border border-border hover:border-primary hover:shadow-glow-primary transition-all duration-300 hover:scale-102",
+        success: "bg-success text-success-foreground hover:bg-success/90 shadow-glow-primary",
+        warning: "bg-destructive text-destructive-foreground hover:bg-destructive/90"
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
+        xl: "h-14 rounded-lg px-10 text-lg",
         icon: "h-10 w-10",
       },
     },
